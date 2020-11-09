@@ -6,182 +6,153 @@
 //
 
 #import "PDFWatermark.h"
+#import "UIImage+Watermark.h"
 
 @implementation PDFWatermark
 
-- (void)footButtonAction
-
++ (NSString *)getWaterMarkPDFPathWithOriginalPDFPath:(NSString *)pdfPath
 {
-//    if ([self.downloadUrl isEqualToString:@""] || self.downloadUrl == nil || [self.downloadUrl isEqual:nil] || !self.downloadUrl) {
-//
-//       return;
-//
-//    }
-
-    NSURL * url = [[NSURL alloc] initWithString:@""];
-
-    CFURLRef ref = (__bridge CFURLRef)url;
-
-    CGPDFDocumentRef pdf = CGPDFDocumentCreateWithURL(ref);
-
+    NSArray *images = [self getImagesWithPDFPath:pdfPath];
+    if (!images || images.count == 0) {
+        return pdfPath;
+    }
     
-    
-    
-    CFRelease(ref);
+    NSMutableArray *waterImages = [NSMutableArray array];
+    for (NSInteger i = 0; i < images.count; i ++) {
+        
+        UIImage *image = images[i];
+        UIImage *waterImage = [UIImage imageNamed:@"waterIcon"];
 
-    NSInteger num = CGPDFDocumentGetNumberOfPages(pdf);
-
-    CGImageRef imageRef = PDFPageToCGImage(1,pdf);
-
-    UIImage *amg = [UIImage imageWithCGImage:imageRef];
-
-    CGImageRelease(imageRef);
-
- 
-
-   //保存图片到相册
-
-    UIImageWriteToSavedPhotosAlbum(amg, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
-
-}
-
-CGImageRef PDFPageToCGImage(size_t pageNumber, CGPDFDocumentRef document)
-
-{
-    CGPDFPageRef page = CGPDFDocumentGetPage (document, pageNumber);
-
-    if(page)
-
-    {
-        CGRect pageSize =CGPDFPageGetBoxRect(page,kCGPDFMediaBox);
-
-        CGContextRef outContext= CreateARGBBitmapContext (pageSize.size.width, pageSize.size.height);
-
-        if(outContext)
-
-        {
-            CGContextDrawPDFPage(outContext, page);
-
-            CGImageRef ThePDFImage= CGBitmapContextCreateImage(outContext);
-
-            CFRelease(outContext);
-
-            return ThePDFImage;
-
+        UIImage *finalImage = [image addWaterImage:waterImage];
+        if (finalImage) {
+            [waterImages addObject:finalImage];
         }
-
     }
-
-    return NULL;
-
+   
+    NSString *filePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
+    filePath = [filePath stringByAppendingPathComponent:pdfPath.lastPathComponent];
+    
+    //NSString *filePath = pdfPath;
+    filePath = [self getPDF:waterImages PDFFilePath:filePath];
+    return filePath;
 }
 
-CGContextRef CreateARGBBitmapContext (size_t pixelsWide, size_t pixelsHigh)
-
++ (NSArray *)getImagesWithPDFPath:(NSString *)pdfPath
 {
-    CGContextRef    context = NULL;
-
-    CGColorSpaceRef colorSpace;
-
-    void *          bitmapData;
-
-    unsigned long   bitmapByteCount;
-
-    unsigned long   bitmapBytesPerRow;
-
-    // Get image width, height. We’ll use the entire image.
-
-    //  size_t pixelsWide = CGImageGetWidth(inImage);
-
-    //  size_t pixelsHigh = CGImageGetHeight(inImage);
-
-    // Declare the number of bytes per row. Each pixel in the bitmap in this
-
-    // example is represented by 4 bytes; 8 bits each of red, green, blue, and
-
-    // alpha.
-
-    bitmapBytesPerRow   = (pixelsWide * 4);
-
-    bitmapByteCount     = (bitmapBytesPerRow * pixelsHigh);
-
-    // Use the generic RGB color space.
-
-    colorSpace =CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-
-    if (colorSpace == NULL)
-
-    {
-        fprintf(stderr, "Error allocating color space\n");
-
-        return NULL;
-
+    NSURL*filePath = [NSURL fileURLWithPath:pdfPath];
+    //读取PDF原文件的大小
+    CGPDFDocumentRef doc = CGPDFDocumentCreateWithURL((__bridge CFURLRef)filePath);
+    if (!doc) {
+        return @[];
     }
-
-    // Allocate memory for image data. This is the destination in memory
-
-    // where any drawing to the bitmap context will be rendered.
-
-    bitmapData = malloc( bitmapByteCount );
-
-    if (bitmapData == NULL)
-
-    {
-        fprintf (stderr, "Memory not allocated!");
-
-        CGColorSpaceRelease( colorSpace );
-
-        return NULL;
-
+    NSInteger num = CGPDFDocumentGetNumberOfPages(doc);
+    NSMutableArray *pdfImageArray = [NSMutableArray array];
+    for (NSInteger i = 1; i < num + 1; i++) {
+        CGPDFPageRef page =CGPDFDocumentGetPage(doc,i);
+    
+        CGRect pageRect = CGPDFPageGetBoxRect(page, kCGPDFMediaBox);
+        pageRect.origin = CGPointZero;
+        pageRect.size.height = pageRect.size.height * 2;
+        pageRect.size.width = pageRect.size.width * 2;
+        
+        //开启图片绘制 上下文
+        UIGraphicsBeginImageContext(pageRect.size);
+        
+        CGContextRef context= UIGraphicsGetCurrentContext();
+        
+        //设置白色背景
+        CGContextSetRGBFillColor(context,1.0,1.0,1.0,1.0);
+        CGContextFillRect(context,pageRect);
+        CGContextSaveGState(context);
+        
+        ////进行翻转
+        CGContextTranslateCTM(context, -pageRect.size.width/2, pageRect.size.height*1.5);
+        CGContextScaleCTM(context,2, -2);
+        CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
+        CGContextSetRenderingIntent(context, kCGRenderingIntentDefault);
+        CGContextConcatCTM(context, CGPDFPageGetDrawingTransform(page, kCGPDFMediaBox, pageRect,0,true));
+        CGContextDrawPDFPage(context,page);
+        CGContextRestoreGState(context);
+        UIImage *pdfImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        if (pdfImage) {
+            [pdfImageArray addObject:pdfImage];
+        }
     }
-
-    // Create the bitmap context. We want pre-multiplied ARGB, 8-bits
-
-    // per component. Regardless of what the source image format is
-
-    // (CMYK, Grayscale, and so on) it will be converted over to the format
-
-    // specified here by CGBitmapContextCreate.
-
-    context = CGBitmapContextCreate (bitmapData,
-
-                                     pixelsWide,
-
-                                     pixelsHigh,
-
-                                     8,      // bits per component
-
-                                     bitmapBytesPerRow,
-
-                                     colorSpace,
-
-                                     kCGImageAlphaPremultipliedFirst);
-
-    if (context == NULL)
-
-    {
-        free (bitmapData);
-
-        fprintf (stderr, "Context not created!");
-
-    }
-
-    // Make sure and release colorspace before returning
-
-    CGColorSpaceRelease( colorSpace );
-
-    return context;
-
+    return pdfImageArray;
 }
 
- 
-
-// 功能：显示图片保存结果
-
-- (void)image:(UIImage *)image didFinishSavingWithError:(NSError*)error contextInfo:(void*)contextInfo
-
+///从pdf转过来的图片再次转pdf
++ (NSString *)getPDFFromPDFImages:(NSArray *)pdfimages PDFFilePath:(NSString *)pdfPath
 {
-//
-
+    if (!pdfimages || pdfimages.count == 0) {
+        return nil;
+    }
+        // CGRectZero 表示默认尺寸，参数可修改，设置自己需要的尺寸
+        UIGraphicsBeginPDFContextToFile(pdfPath, CGRectZero, NULL);
+        
+        CGRect  pdfBounds = UIGraphicsGetPDFContextBounds();
+        CGFloat pdfWidth  = pdfBounds.size.width;
+        CGFloat pdfHeight = pdfBounds.size.height;
+        
+        [pdfimages enumerateObjectsUsingBlock:^(UIImage * _Nonnull image, NSUInteger idx, BOOL * _Nonnull stop) {
+            // 绘制PDF
+            UIGraphicsBeginPDFPage();
+            
+            [image drawInRect:CGRectMake(0, 0, pdfWidth, pdfHeight)];
+        }];
+        
+        UIGraphicsEndPDFContext();
+    
+    return pdfPath;
 }
+
+///普通图片转pdf
++ (NSString *)getPDF:(NSArray *)images PDFFilePath:(NSString *)pdfPath
+{
+    if (!images || images.count == 0) {
+        return nil;
+    }
+        // CGRectZero 表示默认尺寸，参数可修改，设置自己需要的尺寸
+        UIGraphicsBeginPDFContextToFile(pdfPath, CGRectZero, NULL);
+        
+        CGRect  pdfBounds = UIGraphicsGetPDFContextBounds();
+        CGFloat pdfWidth  = pdfBounds.size.width;
+        CGFloat pdfHeight = pdfBounds.size.height;
+        
+        [images enumerateObjectsUsingBlock:^(UIImage * _Nonnull image, NSUInteger idx, BOOL * _Nonnull stop) {
+            // 绘制PDF
+            UIGraphicsBeginPDFPage();
+            
+            CGFloat imageW = image.size.width;
+            CGFloat imageH = image.size.height;
+            
+            [image drawInRect:CGRectMake(0, 0, pdfWidth, pdfHeight)];
+            
+            if (imageW <= pdfWidth && imageH <= pdfHeight)
+            {
+                CGFloat originX = (pdfWidth - imageW) / 2;
+                CGFloat originY = (pdfHeight - imageH) / 2;
+                [image drawInRect:CGRectMake(originX, originY, imageW, imageH)];
+            }else{
+                CGFloat width,height;
+
+                if ((imageW / imageH) > (pdfWidth / pdfHeight))
+                {
+                    width  = pdfWidth;
+                    height = width * imageH / imageW;
+                }else{
+                    height = pdfHeight;
+                    width = height * imageW / imageH;
+                }
+                [image drawInRect:CGRectMake((pdfWidth - width) / 2, (pdfHeight - height) / 2, width, height)];
+            }
+        }];
+        
+        UIGraphicsEndPDFContext();
+    
+    return pdfPath;
+}
+
+
 @end

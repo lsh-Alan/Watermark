@@ -13,6 +13,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)getUIImageFromPDFPage:(int)page_number filePath:(NSString*)pdfPath;
 
++ (NSArray *)getImagesWithPDFPath:(NSString *)pdfPath;
+
++ (NSString *)getWaterMarkPDFFilePath:(NSString *)pdfPath;
+
 @end
 
 NS_ASSUME_NONNULL_END
