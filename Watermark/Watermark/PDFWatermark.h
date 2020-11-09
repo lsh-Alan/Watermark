@@ -18,10 +18,10 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSArray *)getImagesWithPDFPath:(NSString *)pdfPath;
 
 ///从pdf转过来的图片再次转pdf
-+ (NSString *)getPDFFromPDFImages:(NSArray *)pdfimages PDFFilePath:(NSString *)pdfPath;
++ (BOOL)setPDFFromPDFImages:(NSArray *)pdfimages TargetPDFPath:(NSString *)pdfPath;
 
 ///普通图片转pdf
-+ (NSString *)getPDF:(NSArray *)images PDFFilePath:(NSString *)pdfPath;
++ (BOOL)setPDF:(NSArray *)images TargetPDFPath:(NSString *)pdfPath;
 
 @end
 

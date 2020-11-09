@@ -21,6 +21,7 @@
     [super viewDidLoad];
     
     self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 400, 300)];
+    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
     [self.view addSubview:self.imageView];
     
     UIButton *button1 = [[UIButton alloc] initWithFrame:CGRectMake(50, 350, 60, 60)];
@@ -37,6 +38,11 @@
     button2.backgroundColor = [UIColor grayColor];
     [self.view addSubview:button2];
     
+    
+//    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(60, 250, 200, 200)];
+//    view.backgroundColor = [UIColor redColor];
+//    [self.imageView addSubview:view];
+    
 }
 
 - (void)addImage
@@ -47,6 +53,9 @@
     UIImage *waterImage = [UIImage imageNamed:@"waterIcon"];
     
     UIImage *finalImage = [image addWaterImage:waterImage];
+    
+    finalImage = [finalImage tempaddWaterImage:waterImage];
+    
     self.imageView.image = finalImage;
 }
 
@@ -54,19 +63,12 @@
 {
     
     
-    //    UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1604664556305&di=8e5c4ed98672b60478cdb85d57c07e99&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F64%2F52%2F01300000407527124482522224765.jpg"]]];
-    //
-    //    UIImage *finalImage = [image addWatermarkText:@"水印"];
-    //    self.imageView.image = finalImage;
+        UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1604664556305&di=8e5c4ed98672b60478cdb85d57c07e99&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F64%2F52%2F01300000407527124482522224765.jpg"]]];
     
-    NSString  *url = [[NSBundle mainBundle] pathForResource:@"pdf" ofType:@"pdf"];
-    //    PDFWaterMark2 *pdfWater = [[PDFWaterMark2 alloc] init];
-    //    [pdfWater getUIImageFromPDFPage:1 filePath:url];
+        UIImage *finalImage = [image addWatermarkText:@"水印"];
+        self.imageView.image = finalImage;
     
-    
-    //    NSArray *array = [PDFWaterMark2 getImagesWithPDFPath:url];
-    //    NSLog(@"");
-    
+    NSString  *url = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"pdf"];
     
     NSString *filePath = [PDFWatermark getWaterMarkPDFPathWithOriginalPDFPath:url];
     NSData * data = [NSData dataWithContentsOfFile:filePath];

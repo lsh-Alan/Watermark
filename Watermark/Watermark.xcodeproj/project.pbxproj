@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E70A87C92559672500F1E300 /* test.pdf in Resources */ = {isa = PBXBuildFile; fileRef = E70A87C82559672500F1E300 /* test.pdf */; };
 		E7544DD5255541CB00AC036F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E7544DD4255541CB00AC036F /* AppDelegate.m */; };
 		E7544DD8255541CB00AC036F /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E7544DD7255541CB00AC036F /* SceneDelegate.m */; };
 		E7544DDB255541CB00AC036F /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E7544DDA255541CB00AC036F /* ViewController.m */; };
@@ -19,8 +20,6 @@
 		E7544E0D2555425000AC036F /* UIImage+Watermark.m in Sources */ = {isa = PBXBuildFile; fileRef = E7544E0C2555425000AC036F /* UIImage+Watermark.m */; };
 		E7544E1225554D3500AC036F /* waterIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E7544E1125554D3500AC036F /* waterIcon.png */; };
 		E7544E1E255555CE00AC036F /* PDFWatermark.m in Sources */ = {isa = PBXBuildFile; fileRef = E7544E1D255555CE00AC036F /* PDFWatermark.m */; };
-		E7544E2425555E7300AC036F /* PDFWaterMark2.m in Sources */ = {isa = PBXBuildFile; fileRef = E7544E2325555E7300AC036F /* PDFWaterMark2.m */; };
-		E7544E2925555F7500AC036F /* pdf.pdf in Resources */ = {isa = PBXBuildFile; fileRef = E7544E2825555F7500AC036F /* pdf.pdf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E70A87C82559672500F1E300 /* test.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = test.pdf; sourceTree = "<group>"; };
 		E7544DD0255541CB00AC036F /* Watermark.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Watermark.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7544DD3255541CB00AC036F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E7544DD4255541CB00AC036F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -64,9 +64,6 @@
 		E7544E1125554D3500AC036F /* waterIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = waterIcon.png; sourceTree = "<group>"; };
 		E7544E1C255555CE00AC036F /* PDFWatermark.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PDFWatermark.h; sourceTree = "<group>"; };
 		E7544E1D255555CE00AC036F /* PDFWatermark.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PDFWatermark.m; sourceTree = "<group>"; };
-		E7544E2225555E7300AC036F /* PDFWaterMark2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PDFWaterMark2.h; sourceTree = "<group>"; };
-		E7544E2325555E7300AC036F /* PDFWaterMark2.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PDFWaterMark2.m; sourceTree = "<group>"; };
-		E7544E2825555F7500AC036F /* pdf.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = pdf.pdf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,10 +124,8 @@
 				E7544E0C2555425000AC036F /* UIImage+Watermark.m */,
 				E7544E1C255555CE00AC036F /* PDFWatermark.h */,
 				E7544E1D255555CE00AC036F /* PDFWatermark.m */,
-				E7544E2225555E7300AC036F /* PDFWaterMark2.h */,
-				E7544E2325555E7300AC036F /* PDFWaterMark2.m */,
 				E7544E1125554D3500AC036F /* waterIcon.png */,
-				E7544E2825555F7500AC036F /* pdf.pdf */,
+				E70A87C82559672500F1E300 /* test.pdf */,
 				E7544DDC255541CB00AC036F /* Main.storyboard */,
 				E7544DDF255541CF00AC036F /* Assets.xcassets */,
 				E7544DE1255541CF00AC036F /* LaunchScreen.storyboard */,
@@ -262,7 +257,7 @@
 			files = (
 				E7544DE3255541CF00AC036F /* LaunchScreen.storyboard in Resources */,
 				E7544E1225554D3500AC036F /* waterIcon.png in Resources */,
-				E7544E2925555F7500AC036F /* pdf.pdf in Resources */,
+				E70A87C92559672500F1E300 /* test.pdf in Resources */,
 				E7544DE0255541CF00AC036F /* Assets.xcassets in Resources */,
 				E7544DDE255541CB00AC036F /* Main.storyboard in Resources */,
 			);
@@ -290,7 +285,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E7544DDB255541CB00AC036F /* ViewController.m in Sources */,
-				E7544E2425555E7300AC036F /* PDFWaterMark2.m in Sources */,
 				E7544DD5255541CB00AC036F /* AppDelegate.m in Sources */,
 				E7544DE6255541CF00AC036F /* main.m in Sources */,
 				E7544E1E255555CE00AC036F /* PDFWatermark.m in Sources */,
