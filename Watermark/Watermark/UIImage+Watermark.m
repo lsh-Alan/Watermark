@@ -23,20 +23,6 @@
     return image;
 }
 
-// 给图片添加右下角图片水印
-- (UIImage *)tempaddWaterImage:(UIImage *)waterImage
-{
-    CGFloat scale = 0.3;
-    CGFloat margin = 5;
-    CGFloat waterW = waterImage.size.width * scale;
-    CGFloat waterH = waterImage.size.height * scale;
-    CGFloat waterX = self.size.width - waterW - margin;
-    CGFloat waterY = self.size.height - waterH - margin;
-    
-    UIImage *image = [self addWaterImage:waterImage waterImageRect:CGRectMake(waterX, waterY, 100 , 60) CenterPoint:CGPointMake(100, 100) Rotate:45];
-    return image;
-}
-
 // 给图片添加右下角文字水印
 - (UIImage *)addWatermarkText:(NSString *)text
 {
@@ -73,8 +59,8 @@
     return newImage;
 }
 
-//水印 尺寸 旋转角度 centerpoint
-- (UIImage *)addWaterImage:(UIImage *)waterImage waterImageRect:(CGRect)rect CenterPoint:(CGPoint)centerPoint Rotate:(CGFloat)rotateAngle
+//水印 尺寸 旋转角度 originalpPoint
+- (UIImage *)addWaterImage:(UIImage *)waterImage waterImageRect:(CGRect)rect OriginalPoint:(CGPoint)originalPoint Rotate:(CGFloat)rotateAngle
 {
     if (!waterImage) {
         return self;
@@ -88,7 +74,7 @@
     //3.绘制背景图片
     [self drawInRect:CGRectMake(0, 0, self.size.width, self.size.height)];
     //绘制水印图片到当前上下文
-    [waterImage drawAtPoint:centerPoint blendMode:kCGBlendModeNormal alpha:1];
+    [waterImage drawAtPoint:originalPoint blendMode:kCGBlendModeNormal alpha:1];
     //[waterImage drawInRect:rect blendMode:kCGBlendModeNormal alpha:1];
     //4.从上下文中获取新图片
     UIImage * newImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -158,9 +144,9 @@
     // 创建位图上下文
     UIGraphicsBeginImageContextWithOptions(CGSizeMake(rotatedSize.width, rotatedSize.height), NO, 0);
     CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetRGBFillColor(context,1.0,48/255.0,48/255.0,1.0);
-    CGContextFillRect(context,CGRectMake(0, 0, rotatedSize.width, rotatedSize.height));
-    CGContextSaveGState(context);
+//    CGContextSetRGBFillColor(context,1.0,48/255.0,48/255.0,1.0);
+//    CGContextFillRect(context,CGRectMake(0, 0, rotatedSize.width, rotatedSize.height));
+//    CGContextSaveGState(context);
     
     // 将原点移动到图像中间，这样我们就可以在中心周围旋转和旋转。
     CGContextTranslateCTM(context, rotatedSize.width/2.0, rotatedSize.height/2.0);
